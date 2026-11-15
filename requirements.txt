@@ -5,3 +5,4 @@ bakong-khqr>=0.7.0
 gunicorn>=21.2
 Pillow>=10.0
 python-dotenv>=1.0
+boto3>=1.34

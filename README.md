@@ -49,6 +49,14 @@ categories (add/rename/delete) · change password.
 | `LOW_STOCK_THRESHOLD` | Dashboard lists active products with this many or fewer in stock | 5 |
 | `TZ_OFFSET_HOURS` | Shop's time zone vs UTC, used for "per day" numbers on the dashboard | 7 (Cambodia) |
 | `SEED_DOWNLOAD_IMAGES` | `0` to skip downloading photos on first run | 1 |
+| `BUCKET` / `REGION` | S3 bucket for product images. The database stores only the file path (e.g. `uploads/abc.jpg`) | empty (images in `static/uploads/`) |
+| `AWS_ACCESS_KEY` / `AWS_SECRET_KEY` | Credentials that can put/delete objects in the bucket | empty |
+| `ENDPOINT_STORAGE_URL` | Public address of the bucket (used when `S3_PUBLIC_READ=1`) | `<BUCKET>.s3.<REGION>.amazonaws.com` |
+| `S3_PUBLIC_READ` | `1` if the bucket allows public read (plain links); `0` gives signed links that work with a private bucket | 0 |
+
+**Images on S3:** with `BUCKET` and the AWS keys set, uploads go to the bucket under `uploads/` and seed photos are
+uploaded on first run. The bucket can stay private: pages use signed links (valid 7 days, renewed automatically).
+To move an existing install's images into the bucket, run `python migrate_images.py` once.
 
 **KHQR:** set `KHQR_ACCOUNT_ID` to your real Bakong account so the QR pays you. Without `BAKONG_TOKEN` the app runs in
 *demo mode*: orders start as **pending** and the admin confirms the payment manually.
@@ -56,6 +64,6 @@ categories (add/rename/delete) · change password.
 ## Deploy (Render)
 1. Push to GitHub. 2. Render → New → Blueprint (uses `render.yaml`) or a Web Service with start command `gunicorn app:app --preload`.
 3. Set `ADMIN_PASSWORD` and `KHQR_ACCOUNT_ID`.
-Note: free hosts have an ephemeral disk, so SQLite data and uploaded images reset on redeploy. Use a persistent disk or `DATABASE_URL` (Postgres) for permanent data.
+Note: free hosts have an ephemeral disk, so SQLite data resets on redeploy (and uploaded images too, unless they are on S3). Use a persistent disk or `DATABASE_URL` (Postgres) for permanent data.
 # flask-final-y4
 # flask-final-y4

@@ -7,12 +7,13 @@ Product pictures are resolved in this order:
 """
 import io
 import os
-import shutil
+import tempfile
 import urllib.request
 from decimal import Decimal
 
 from PIL import Image, ImageDraw, ImageFont
 
+import storage
 from models import Category, Product, db
 import seed_data
 
@@ -76,31 +77,34 @@ def download_unsplash(photo_id, dest, size=1000, timeout=30):
     return True
 
 
-def resolve_image(fname, title, color, unsplash_id=None, dest_folder=None):
-    """Put a picture for `fname` into dest_folder, trying the sources in order."""
-    dest = os.path.join(dest_folder, fname)
-    if os.path.exists(dest):
-        return "exists"
+def resolve_image(fname, title, color, unsplash_id=None):
+    """Upload a picture for `fname` to image storage and return its path (None if there is none).
+
+    Sources are tried in order: seed_images/, Unsplash download, generated placeholder.
+    """
+    path = storage.key_for(fname)
+    if storage.exists(path):
+        return path
     src = os.path.join(SEED_IMAGES, fname)
     if os.path.exists(src):
-        shutil.copyfile(src, dest)
-        return "seed_images"
-    if unsplash_id and os.environ.get("SEED_DOWNLOAD_IMAGES", "1") == "1":
-        try:
-            download_unsplash(unsplash_id, dest)
-            return "unsplash"
-        except Exception as e:  # offline, blocked, rate-limited...
-            print(f"[seed] could not download {unsplash_id}: {e}")
-    if title:
-        make_placeholder(dest, title, tuple(color))
-        return "placeholder"
-    return "none"
+        return storage.save_file(src, path)
+    with tempfile.TemporaryDirectory() as tmp:
+        dest = os.path.join(tmp, fname)
+        if unsplash_id and os.environ.get("SEED_DOWNLOAD_IMAGES", "1") == "1":
+            try:
+                download_unsplash(unsplash_id, dest)
+                return storage.save_file(dest, path)
+            except Exception as e:  # offline, blocked, rate-limited...
+                print(f"[seed] could not download {unsplash_id}: {e}")
+        if title:
+            make_placeholder(dest, title, tuple(color))
+            return storage.save_file(dest, path)
+    return None
 
 
 def seed_if_empty(app):
     if Product.query.count():
         return
-    folder = app.config["UPLOAD_FOLDER"]
     cats = {}
     for i, p in enumerate(seed_data.PRODUCTS, 1):
         cname = p["category"]
@@ -108,12 +112,12 @@ def seed_if_empty(app):
             cats[cname] = Category.query.filter_by(name=cname).first() or Category(name=cname)
             db.session.add(cats[cname])
         fname = p.get("file") or f"seed_{i}.jpg"
-        resolve_image(fname, p["name"], p.get("color", (120, 120, 120)), p.get("unsplash"), folder)
+        image = resolve_image(fname, p["name"], p.get("color", (120, 120, 120)), p.get("unsplash"))
         db.session.add(Product(
             name=p["name"], description=p["description"], price=Decimal(p["price"]),
             old_price=Decimal(p["old_price"]) if p.get("old_price") else None,
             stock=p["stock"], category_ref=cats[cname], featured=p.get("featured", False),
-            image=fname, status="active"))
+            image=image, status="active"))
     for b in getattr(seed_data, "BANNERS", []):
-        resolve_image(b["file"], None, None, b.get("unsplash"), folder)
+        resolve_image(b["file"], None, None, b.get("unsplash"))
     db.session.commit()

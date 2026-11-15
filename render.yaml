@@ -15,3 +15,13 @@ services:
         sync: false
       - key: SHOP_NAME
         value: Angkor Wellness
+      - key: BUCKET
+        sync: false
+      - key: REGION
+        sync: false
+      - key: AWS_ACCESS_KEY
+        sync: false
+      - key: AWS_SECRET_KEY
+        sync: false
+      - key: ENDPOINT_STORAGE_URL
+        sync: false

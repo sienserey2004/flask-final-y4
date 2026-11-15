@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% from 'theme_card.html' import card, checklist, pay_chips with context %}
 {% from '_macros.html' import thumb, csrf with context %}
-{% set hero_img = url_for('static', filename='uploads/' ~ hero_banner) if hero_banner else (url_for('static', filename='uploads/' ~ hero.image) if hero and hero.image else '') %}
+{% set hero_img = image_url(hero_banner) if hero_banner else (image_url(hero.image) if hero and hero.image else '') %}
 
 {% block hero %}
 <section class="sx-hero" style="--bg:url('{{ hero_img }}')">

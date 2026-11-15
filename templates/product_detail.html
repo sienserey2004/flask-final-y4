@@ -6,7 +6,7 @@
 <meta property="og:title" content="{{ p.name }}">
 <meta property="og:description" content="{{ p.description[:150] }}">
 <meta property="og:url" content="{{ link }}">
-{% if p.image %}<meta property="og:image" content="{{ url_for('static', filename='uploads/' ~ p.image, _external=True) }}">{% endif %}
+{% if p.image %}<meta property="og:image" content="{{ image_url(p.image, external=True) }}">{% endif %}
 {% endblock %}
 {% block content %}
 <nav aria-label="breadcrumb"><ol class="breadcrumb">

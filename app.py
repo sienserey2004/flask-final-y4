@@ -17,6 +17,7 @@ from sqlalchemy import func, update
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import secure_filename
 
+import storage
 from config import Config
 from dashboard import RANGES, dashboard_stats
 from models import (NEXT_STATUS, ORDER_STATUSES, REVENUE_STATUSES, AdminUser, Category,
@@ -60,6 +61,9 @@ def register_helpers(app):
             token = session.get("_csrf")
             if not token or token != request.form.get("_csrf"):
                 abort(400, "Invalid or missing CSRF token")
+
+    # {{ image_url(p.image) }} -> full link to the picture (S3 bucket or static/uploads)
+    app.jinja_env.globals["image_url"] = storage.url
 
     @app.context_processor
     def inject_globals():
@@ -140,22 +144,20 @@ def allowed_file(name):
 
 
 def save_image(file_storage):
+    """Upload the picture (to S3 when configured) and return its path for the database."""
     if not file_storage or not file_storage.filename:
         return None
     if not allowed_file(file_storage.filename):
         raise ValueError("Image must be png, jpg, jpeg, gif or webp")
     ext = file_storage.filename.rsplit(".", 1)[1].lower()
-    name = f"{uuid.uuid4().hex}.{ext}"
-    file_storage.save(os.path.join(Config.UPLOAD_FOLDER, secure_filename(name)))
-    return name
+    path = storage.PREFIX + secure_filename(f"{uuid.uuid4().hex}.{ext}")
+    return storage.save(file_storage.stream, path)
 
 
-def delete_image(name):
-    if name and not name.startswith("seed_"):
-        try:
-            os.remove(os.path.join(Config.UPLOAD_FOLDER, name))
-        except OSError:
-            pass
+def delete_image(path):
+    # seed pictures are shared by every fresh install, so they are never deleted
+    if path and not os.path.basename(path).startswith("seed_"):
+        storage.delete(path)
 
 
 def build_khqr(app, amount, bill_number):
@@ -228,11 +230,11 @@ def register_public(app):
         for p in reversed(active):
             if p.image:
                 cat_images.setdefault(p.category, p.image)
-        banner = os.path.join(app.config["UPLOAD_FOLDER"], "seed_banner_hero.jpg")
+        banner = storage.key_for("seed_banner_hero.jpg")
         return render_template("home.html", new_arrivals=active[:8], deals=deals,
                                featured=featured, hero=(featured[0] if featured else None),
                                total_products=len(active), cat_images=cat_images,
-                               hero_banner="seed_banner_hero.jpg" if os.path.exists(banner) else None)
+                               hero_banner=banner if storage.exists(banner) else None)
 
     @app.route("/shop")
     def shop():

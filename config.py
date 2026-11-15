@@ -24,6 +24,18 @@ class Config:
     MAX_CONTENT_LENGTH = 4 * 1024 * 1024
     ALLOWED_EXT = {"png", "jpg", "jpeg", "gif", "webp"}
 
+    # S3 bucket for product images. When set, images go to the bucket and the database
+    # stores only the file path (e.g. "uploads/abc.jpg"). Empty = keep them in static/uploads.
+    S3_BUCKET = os.environ.get("BUCKET", "")
+    S3_REGION = os.environ.get("REGION", "ap-southeast-1")
+    AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY", "")
+    AWS_SECRET_KEY = os.environ.get("AWS_SECRET_KEY", "")
+    _endpoint = os.environ.get("ENDPOINT_STORAGE_URL", "") or (
+        f"{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com" if S3_BUCKET else "")
+    S3_PUBLIC_URL = (_endpoint if _endpoint.startswith("http") else "https://" + _endpoint).rstrip("/")
+    # 1 = the bucket allows public read, so use plain links. 0 (default) = signed links (private bucket)
+    S3_PUBLIC_READ = os.environ.get("S3_PUBLIC_READ", "0") == "1"
+
     ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
     ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")
 
