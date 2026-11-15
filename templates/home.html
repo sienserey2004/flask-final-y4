@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% from 'theme_card.html' import card, checklist, pay_chips with context %}
+{% from '_macros.html' import thumb, csrf with context %}
+{% set hero_img = url_for('static', filename='uploads/' ~ hero_banner) if hero_banner else (url_for('static', filename='uploads/' ~ hero.image) if hero and hero.image else '') %}
+
+{% block hero %}
+<section class="sx-hero" style="--bg:url('{{ hero_img }}')">
+  <div class="container">
+    <div class="inner">
+      <p class="l1">Feel Good, Every Day</p>
+      <h1>Health &amp; Wellness Made Simple</h1>
+      <p class="sub">Vitamins, home-fitness gear, herbal teas and aromatherapy, delivered across Cambodia. Pay in seconds with KHQR.</p>
+      <div class="d-flex align-items-center gap-4 flex-wrap">
+        <a class="sx-pill white" href="{{ url_for('shop') }}"><span class="dot"><i class="bi bi-arrow-right"></i></span> Shop Now</a>
+        <a class="sx-link" href="{{ url_for('shop', deals=1) }}">See Offers <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<section class="sx-strip">
+  <div class="lbl">SHOP BY CATEGORY</div>
+  <div class="items">
+    {% for name, n in categories %}<a href="{{ url_for('shop', category=name) }}"><i class="bi {{ name|cat_icon }}"></i><span>{{ name }}</span></a>{% endfor %}
+  </div>
+</section>
+
+<section class="sx-sec">
+  <h2 class="sx-title">WHY SIEN SEREY STORE</h2>
+  <div class="row g-5 align-items-center">
+    <div class="col-lg-6 d-flex flex-column gap-3">
+      <div class="sx-feat active"><span class="ic"><i class="bi bi-patch-check-fill"></i></span><div><b>Quality Checked</b><p>Every product is sealed, in date and sourced from trusted suppliers. We check each order before it leaves our shop.</p></div></div>
+      <div class="sx-feat"><span class="ic"><i class="bi bi-qr-code-scan"></i></span><div><b>Pay With KHQR</b><p>Scan with Bakong or any Cambodian banking app. No account needed: check out as a guest.</p></div></div>
+      <div class="sx-feat"><span class="ic"><i class="bi bi-truck"></i></span><div><b>Fast Delivery</b><p>Phnom Penh in 24 hours, provinces in 2–3 days. Free delivery on orders over $30.</p></div></div>
+    </div>
+    <div class="col-lg-6">
+      <h3 class="sx-two"><span>Wellness You Can Trust</span><b>Delivered To Your Door</b></h3>
+      <ul class="sx-check">
+        <li>Daily vitamins and supplements</li>
+        <li>Home-fitness gear for every level</li>
+        <li>Calming herbal teas and gift sets</li>
+        <li>Pure essential oils for relaxation</li>
+        <li>Friendly support on Telegram</li>
+      </ul>
+      <a class="sx-pill blue mt-2" href="{{ url_for('shop') }}"><span class="dot"><i class="bi bi-arrow-right"></i></span> Browse All Products</a>
+    </div>
+  </div>
+</section>
+
+{% if hero %}
+<section class="sx-spot">
+  <a class="img" href="{{ url_for('product_detail', pid=hero.id) }}">{{ thumb(hero, 'spot-img') }}</a>
+  <div class="panel">
+    <div class="badge-line"><i class="bi bi-star-fill"></i> Bestseller · {{ hero.category }}</div>
+    <h2>{{ hero.name }}</h2>
+    {{ checklist(hero, True) }}
+    <form method="post" action="{{ url_for('cart_add', pid=hero.id) }}">{{ csrf() }}<input type="hidden" name="quantity" value="1">
+      <button class="sx-cta" {{ '' if hero.in_stock else 'disabled' }}><b>ADD TO CART · {{ hero.price|money }}</b><small>Free delivery on orders over $30</small></button></form>
+    {{ pay_chips() }}
+    <div class="sx-note"><i class="bi bi-shield-check"></i><div><b>Quality checked</b><span>Sealed, in-date and stored away from heat and sunlight.</span></div></div>
+  </div>
+</section>
+{% endif %}
+
+<section class="sx-sec">
+  <h2 class="sx-title">BESTSELLERS</h2>
+  <div class="row row-cols-2 row-cols-lg-4 g-3">{% for p in featured[:4] %}<div class="col">{{ card(p) }}</div>{% endfor %}</div>
+  <div class="text-center mt-4"><a class="sx-link dark" href="{{ url_for('shop') }}">View all products <i class="bi bi-arrow-right"></i></a></div>
+</section>
+
+{% if deals %}{% set d = deals[0] %}
+<section class="sx-offer">
+  <div class="txt">
+    <span class="eyebrow">LIMITED-TIME OFFER · SAVE {{ d.discount_pct }}%</span>
+    <h2>{{ d.name }}</h2>
+    <p class="lead-sm">{{ d.category }}</p>
+    {{ checklist(d) }}
+    <form method="post" action="{{ url_for('cart_add', pid=d.id) }}">{{ csrf() }}<input type="hidden" name="quantity" value="1">
+      <button class="sx-cta blue" {{ '' if d.in_stock else 'disabled' }}><b>ADD TO CART · {{ d.price|money }}</b><small>Was {{ d.old_price|money }}</small></button></form>
+    {{ pay_chips() }}
+    <div class="sx-note light"><i class="bi bi-lightning-charge-fill"></i><div><b>{{ deals|length }} products on offer</b><span><a href="{{ url_for('shop', deals=1) }}">See all offers →</a></span></div></div>
+  </div>
+  <a class="img" href="{{ url_for('product_detail', pid=d.id) }}">{{ thumb(d, 'spot-img') }}</a>
+</section>
+{% endif %}
+
+<section class="sx-sec">
+  <h2 class="sx-title">NEW ARRIVALS</h2>
+  <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">{% for p in new_arrivals[:8] %}<div class="col">{{ card(p) }}</div>{% endfor %}</div>
+</section>
+{% endblock %}
+
+{% block band %}
+<section class="sx-band">
+  <div class="container">
+    <div class="lbl">SHOP WITH CONFIDENCE</div>
+    <div class="items">
+      <span><i class="bi bi-qr-code"></i> KHQR Payment</span>
+      <span><i class="bi bi-truck"></i> Fast Delivery</span>
+      <span><i class="bi bi-patch-check"></i> Genuine Products</span>
+      <span><i class="bi bi-arrow-counterclockwise"></i> Easy Returns</span>
+      <span><i class="bi bi-telegram"></i> Telegram Support</span>
+    </div>
+  </div>
+</section>
+{% endblock %}

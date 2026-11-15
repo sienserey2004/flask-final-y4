@@ -1,0 +1,29 @@
+{% extends 'admin/base.html' %}
+{% block title %}Orders{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Order history</h1>
+<div class="row g-3 mb-3">
+  <div class="col-6 col-lg-3"><div class="card border-0 shadow-sm"><div class="card-body"><div class="small text-muted">Revenue (paid → delivered)</div><div class="fs-4 fw-bold">{{ revenue|money }}</div></div></div></div>
+  <div class="col-6 col-lg-3"><div class="card border-0 shadow-sm"><div class="card-body"><div class="small text-muted">All orders</div><div class="fs-4 fw-bold">{{ counts.values()|sum }}</div></div></div></div>
+  <div class="col-6 col-lg-3"><div class="card border-0 shadow-sm"><div class="card-body"><div class="small text-muted">Awaiting payment check</div><div class="fs-4 fw-bold text-warning">{{ counts.get('pending', 0) }}</div></div></div></div>
+  <div class="col-6 col-lg-3"><div class="card border-0 shadow-sm"><div class="card-body"><div class="small text-muted">To ship</div><div class="fs-4 fw-bold text-info">{{ counts.get('paid', 0) }}</div></div></div></div>
+</div>
+<ul class="nav nav-pills mb-3 flex-wrap">
+  <li class="nav-item"><a class="nav-link {{ 'active' if not status }}" href="{{ url_for('admin_orders') }}">All</a></li>
+  {% for s in statuses %}<li class="nav-item"><a class="nav-link {{ 'active' if status == s }}" href="{{ url_for('admin_orders', status=s) }}">{{ s|capitalize }} <span class="badge text-bg-light">{{ counts.get(s, 0) }}</span></a></li>{% endfor %}
+</ul>
+<div class="table-responsive bg-white rounded shadow-sm">
+<table class="table align-middle mb-0">
+  <thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th><th class="text-end">Total</th><th>Status</th><th>Payment</th><th>Order date</th><th class="text-end"></th></tr></thead>
+  <tbody>
+  {% for o in orders %}
+    <tr><td>#{{ o.id }}</td><td>{{ o.customer_name }}</td><td>{{ o.phone }}</td>
+      <td class="text-end">{{ o.total|money }}</td>
+      <td><span class="badge text-bg-{{ o.status_badge }}">{{ o.status|capitalize }}</span></td>
+      <td class="small">{{ o.payment.method if o.payment }} · {{ o.payment.status if o.payment }}</td>
+      <td>{{ o.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin_order_detail', oid=o.id) }}"><i class="bi bi-eye"></i> View Details</a></td></tr>
+  {% else %}<tr><td colspan="8" class="text-center text-muted py-4">No orders{{ ' with status ' ~ status if status }}.</td></tr>{% endfor %}
+  </tbody>
+</table></div>
+{% endblock %}

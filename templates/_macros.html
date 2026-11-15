@@ -1,0 +1,5 @@
+{% macro thumb(p, cls='product-thumb') -%}
+  {% if p.image %}<img class="{{ cls }}" src="{{ url_for('static', filename='uploads/' ~ p.image) }}" alt="{{ p.name }}">
+  {% else %}<div class="{{ cls }} d-flex align-items-center justify-content-center text-muted"><i class="bi bi-image fs-1"></i></div>{% endif %}
+{%- endmacro %}
+{% macro csrf() -%}<input type="hidden" name="_csrf" value="{{ csrf_token }}">{%- endmacro %}

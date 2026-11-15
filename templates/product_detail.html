@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import thumb, csrf with context %}
+{% from 'theme_card.html' import card, pay_chips with context %}
+{% block title %}{{ p.name }} — {{ shop_name }}{% endblock %}
+{% block meta %}
+<meta property="og:title" content="{{ p.name }}">
+<meta property="og:description" content="{{ p.description[:150] }}">
+<meta property="og:url" content="{{ link }}">
+{% if p.image %}<meta property="og:image" content="{{ url_for('static', filename='uploads/' ~ p.image, _external=True) }}">{% endif %}
+{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb"><ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+  <li class="breadcrumb-item"><a href="{{ url_for('shop', category=p.category) }}">{{ p.category }}</a></li>
+  <li class="breadcrumb-item active">{{ p.name }}</li></ol></nav>
+
+<section class="sx-spot detail">
+  <div class="img">{{ thumb(p, 'spot-img') }}{% if p.discount_pct %}<span class="off">-{{ p.discount_pct }}%</span>{% endif %}</div>
+  <div class="panel">
+    <div class="badge-line"><i class="bi {{ p.category|cat_icon }}"></i> {{ p.category }}</div>
+    <h1>{{ p.name }}</h1>
+    <div class="d-flex align-items-baseline gap-3 mb-2">
+      <span class="big-price">{{ p.price|money }}</span>
+      {% if p.discount_pct %}<s class="opacity-75">{{ p.old_price|money }}</s>{% endif %}
+    </div>
+    <p class="mb-2">{% if p.in_stock %}<span class="stock ok"><i class="bi bi-check-circle-fill"></i> In stock · {{ p.stock }} available</span>
+      {% else %}<span class="stock no"><i class="bi bi-x-circle-fill"></i> Out of stock</span>{% endif %}</p>
+    <p class="desc">{{ p.description }}</p>
+
+    <form method="post" action="{{ url_for('cart_add', pid=p.id) }}" class="d-flex gap-2 align-items-stretch flex-wrap my-3">
+      {{ csrf() }}
+      <label class="visually-hidden" for="quantity">Quantity</label>
+      <input id="quantity" type="number" class="form-control sx-qty" name="quantity" value="1" min="1" max="{{ p.stock }}" {{ '' if p.in_stock else 'disabled' }}>
+      <button class="sx-cta flex-grow-1" {{ '' if p.in_stock else 'disabled' }}><b>ADD TO CART</b><small>Free delivery on orders over $30</small></button>
+    </form>
+    {{ pay_chips() }}
+    <div class="share mt-3">
+      <span>Share:</span>
+      <a target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u={{ link|urlencode }}"><i class="bi bi-facebook"></i> Facebook</a>
+      <a target="_blank" rel="noopener" href="https://t.me/share/url?url={{ link|urlencode }}&text={{ p.name|urlencode }}"><i class="bi bi-telegram"></i> Telegram</a>
+    </div>
+  </div>
+</section>
+
+{% if related %}
+<section class="sx-sec">
+  <h2 class="sx-title">YOU MAY ALSO LIKE</h2>
+  <div class="row row-cols-2 row-cols-md-4 g-3">{% for r in related %}<div class="col">{{ card(r) }}</div>{% endfor %}</div>
+</section>
+{% endif %}
+{% endblock %}

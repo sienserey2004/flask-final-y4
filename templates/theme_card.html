@@ -1,0 +1,25 @@
+{% from '_macros.html' import thumb, csrf with context %}
+{% macro card(p) %}
+<div class="sx-card h-100">
+  <a class="pic" href="{{ url_for('product_detail', pid=p.id) }}">{{ thumb(p) }}
+    {% if p.discount_pct %}<span class="off">-{{ p.discount_pct }}%</span>{% endif %}
+    {% if not p.in_stock %}<span class="out">Sold out</span>{% endif %}</a>
+  <div class="body">
+    <span class="cat">{{ p.category }}</span>
+    <a class="name" href="{{ url_for('product_detail', pid=p.id) }}">{{ p.name }}</a>
+    <div class="pr"><span class="price">{{ p.price|money }}</span>{% if p.discount_pct %}<s>{{ p.old_price|money }}</s>{% endif %}</div>
+    <form method="post" action="{{ url_for('cart_add', pid=p.id) }}">{{ csrf() }}<input type="hidden" name="quantity" value="1">
+      <button class="sx-add" {{ '' if p.in_stock else 'disabled' }}><i class="bi bi-bag-plus"></i> Add to cart</button></form>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro checklist(p, light=False) %}
+<ul class="sx-check {{ 'light' if light }}">
+  {% for s in p.description.split('. ')[:3] if s.strip() %}<li>{{ s.strip().rstrip('.') }}</li>{% endfor %}
+</ul>
+{% endmacro %}
+
+{% macro pay_chips() %}
+<div class="sx-pay"><span><i class="bi bi-qr-code"></i> KHQR</span><span><i class="bi bi-bank"></i> Bakong</span><span><i class="bi bi-phone"></i> Bank apps</span><span><i class="bi bi-shield-lock"></i> Secure</span></div>
+{% endmacro %}

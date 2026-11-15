@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Order #{{ order.id }} — {{ shop_name }}{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+  <i class="bi bi-check-circle-fill text-success" style="font-size:4rem"></i>
+  <h1 class="h3 mt-2">Thank you! Your order was placed successfully.</h1>
+  <p class="text-muted">A summary of your order is below.</p>
+</div>
+<div class="card border-0 shadow-sm mx-auto" style="max-width:720px"><div class="card-body">
+  <div class="row mb-3">
+    <div class="col-sm-6"><div class="text-muted small">Order ID</div><div class="fs-4 fw-bold">#{{ order.id }}</div></div>
+    <div class="col-sm-6 text-sm-end"><div class="text-muted small">Total amount</div><div class="fs-4 fw-bold price">{{ order.total|money }}</div></div>
+  </div>
+  <h2 class="h6">Customer details</h2>
+  <dl class="row small mb-3">
+    <dt class="col-sm-3">Name</dt><dd class="col-sm-9">{{ order.customer_name }}</dd>
+    <dt class="col-sm-3">Email</dt><dd class="col-sm-9">{{ order.email }}</dd>
+    <dt class="col-sm-3">Phone</dt><dd class="col-sm-9">{{ order.phone }}</dd>
+    <dt class="col-sm-3">Address</dt><dd class="col-sm-9" style="white-space:pre-line">{{ order.address }}</dd>
+    <dt class="col-sm-3">Payment</dt><dd class="col-sm-9">KHQR —
+      {% if order.status == 'paid' %}<span class="badge text-bg-success">Payment received</span>
+      {% else %}<span class="badge text-bg-warning">Awaiting confirmation</span> <span class="text-muted">We'll confirm your KHQR payment shortly.</span>{% endif %}</dd>
+  </dl>
+  <h2 class="h6">Items</h2>
+  <table class="table table-sm">
+    <thead><tr><th>Product</th><th class="text-center">Qty</th><th class="text-end">Subtotal</th></tr></thead>
+    <tbody>{% for i in order.items %}<tr><td>{{ i.product_name }}</td><td class="text-center">{{ i.quantity }}</td><td class="text-end">{{ i.subtotal|money }}</td></tr>{% endfor %}</tbody>
+  </table>
+  <div class="alert alert-light border small mb-0"><i class="bi bi-truck"></i> Save your order number <strong>#{{ order.id }}</strong>. You can see this and your other orders anytime in <a href="{{ url_for('track_order') }}">My orders</a>.</div>
+  <div class="text-center mt-3"><a class="btn btn-brand" href="{{ url_for('home') }}">Continue shopping</a></div>
+</div></div>
+{% endblock %}

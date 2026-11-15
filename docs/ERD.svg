@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1590" height="790" viewBox="0 0 1590 790" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="40" y="40" font-size="24" font-weight="700" fill="#0f172a">Mini E-commerce (KHQR) — Entity Relationship Diagram</text>
+<text x="40" y="60" font-size="13" fill="#64748b">PK = primary key · FK = foreign key · crow's foot = "many" side</text>
+<path d="M330,127.0 H360 V153.0 H450" stroke="#334155" stroke-width="2" fill="none"/>
+<path d="M342,118.0 L342,136.0 M348,118.0 L348,136.0" stroke="#334155" stroke-width="2"/>
+<path d="M434,153.0 L450,144.0 M434,153.0 L450,153.0 M434,153.0 L450,162.0" stroke="#334155" stroke-width="2" fill="none"/>
+<text x="401.0" y="145.0" font-size="12.5" fill="#475569" font-style="italic" text-anchor="middle">has</text>
+<path d="M740,127.0 H770 V179.0 H860" stroke="#334155" stroke-width="2" fill="none"/>
+<path d="M752,118.0 L752,136.0 M758,118.0 L758,136.0" stroke="#334155" stroke-width="2"/>
+<path d="M844,179.0 L860,170.0 M844,179.0 L860,179.0 M844,179.0 L860,188.0" stroke="#334155" stroke-width="2" fill="none"/>
+<circle cx="834" cy="179.0" r="5" fill="#fff" stroke="#334155" stroke-width="2"/>
+<text x="782" y="153.0" font-size="12.5" fill="#475569" font-style="italic" text-anchor="middle"></text>
+<text x="809.0" y="171.0" font-size="12.5" fill="#475569" font-style="italic" text-anchor="middle">sold as</text>
+<path d="M1250,127.0 H1190 V153.0 H1150" stroke="#334155" stroke-width="2" fill="none"/>
+<path d="M1238,118.0 L1238,136.0 M1232,118.0 L1232,136.0" stroke="#334155" stroke-width="2"/>
+<path d="M1166,153.0 L1150,144.0 M1166,153.0 L1150,153.0 M1166,153.0 L1150,162.0" stroke="#334155" stroke-width="2" fill="none"/>
+<text x="1220" y="119.0" font-size="12.5" fill="#475569" font-style="italic" text-anchor="middle">contains</text>
+<path d="M1500,348 V450" stroke="#334155" stroke-width="2"/>
+<path d="M1491,360 H1509 M1491,366 H1509" stroke="#334155" stroke-width="2"/>
+<path d="M1491,438 H1509 M1491,432 H1509" stroke="#334155" stroke-width="2"/>
+<text x="1486" y="403.0" font-size="12.5" fill="#475569" font-style="italic" text-anchor="end">paid by (1 : 1)</text>
+<g><rect x="43" y="74" width="290" height="122" rx="10" fill="#0f172a" opacity=".08"/>
+<rect x="40" y="70" width="290" height="122" rx="10" fill="#fff" stroke="#0f766e" stroke-width="2"/>
+<path d="M40,80 a10,10 0 0 1 10,-10 h270 a10,10 0 0 1 10,10 v34 h-290 z" fill="#0f766e"/>
+<text x="54" y="98" font-size="16" font-weight="700" fill="#fff">Category</text><text x="318" y="98" font-size="11.5" fill="#fff" opacity=".85" text-anchor="end">table: category</text>
+<text x="52" y="131" font-size="10.5" font-weight="700" fill="#b45309">PK</text>
+<text x="80" y="131" font-size="13" font-weight="600" fill="#0f172a">id</text>
+<text x="318" y="131" font-size="11" fill="#64748b" text-anchor="end">INTEGER</text>
+<rect x="42" y="140" width="286" height="26" fill="#f8fafc"/>
+<text x="80" y="157" font-size="13" font-weight="400" fill="#0f172a">name</text>
+<text x="318" y="157" font-size="11" fill="#64748b" text-anchor="end">VARCHAR(60) UNIQUE</text>
+<text x="80" y="183" font-size="13" font-weight="400" fill="#0f172a">created_at</text>
+<text x="318" y="183" font-size="11" fill="#64748b" text-anchor="end">DATETIME</text>
+</g>
+<g><rect x="453" y="74" width="290" height="330" rx="10" fill="#0f172a" opacity=".08"/>
+<rect x="450" y="70" width="290" height="330" rx="10" fill="#fff" stroke="#4f46e5" stroke-width="2"/>
+<path d="M450,80 a10,10 0 0 1 10,-10 h270 a10,10 0 0 1 10,10 v34 h-290 z" fill="#4f46e5"/>
+<text x="464" y="98" font-size="16" font-weight="700" fill="#fff">Product</text><text x="728" y="98" font-size="11.5" fill="#fff" opacity=".85" text-anchor="end">table: product</text>
+<text x="462" y="131" font-size="10.5" font-weight="700" fill="#b45309">PK</text>
+<text x="490" y="131" font-size="13" font-weight="600" fill="#0f172a">id</text>
+<text x="728" y="131" font-size="11" fill="#64748b" text-anchor="end">INTEGER</text>
+<rect x="452" y="140" width="286" height="26" fill="#f8fafc"/>
+<text x="462" y="157" font-size="10.5" font-weight="700" fill="#2563eb">FK</text>
+<text x="490" y="157" font-size="13" font-weight="600" fill="#0f172a">category_id</text>
+<text x="728" y="157" font-size="11" fill="#64748b" text-anchor="end">INTEGER → category.id</text>
+<text x="490" y="183" font-size="13" font-weight="400" fill="#0f172a">name</text>
+<text x="728" y="183" font-size="11" fill="#64748b" text-anchor="end">VARCHAR(150)</text>
+<rect x="452" y="192" width="286" height="26" fill="#f8fafc"/>
+<text x="490" y="209" font-size="13" font-weight="400" fill="#0f172a">description</text>
+<text x="728" y="209" font-size="11" fill="#64748b" text-anchor="end">TEXT</text>
+<text x="490" y="235" font-size="13" font-weight="400" fill="#0f172a">price</text>
+<text x="728" y="235" font-size="11" fill="#64748b" text-anchor="end">DECIMAL(10,2)</text>
+<rect x="452" y="244" width="286" height="26" fill="#f8fafc"/>
+<text x="490" y="261" font-size="13" font-weight="400" fill="#0f172a">old_price</text>
+<text x="728" y="261" font-size="11" fill="#64748b" text-anchor="end">DECIMAL(10,2) NULL</text>
+<text x="490" y="287" font-size="13" font-weight="400" fill="#0f172a">stock</text>
+<text x="728" y="287" font-size="11" fill="#64748b" text-anchor="end">INTEGER</text>
+<rect x="452" y="296" width="286" height="26" fill="#f8fafc"/>
+<text x="490" y="313" font-size="13" font-weight="400" fill="#0f172a">image</text>
+<text x="728" y="313" font-size="11" fill="#64748b" text-anchor="end">VARCHAR(255)</text>
+<text x="490" y="339" font-size="13" font-weight="400" fill="#0f172a">status</text>
+<text x="728" y="339" font-size="11" fill="#64748b" text-anchor="end">active | inactive</text>
+<rect x="452" y="348" width="286" height="26" fill="#f8fafc"/>
+<text x="490" y="365" font-size="13" font-weight="400" fill="#0f172a">featured</text>
+<text x="728" y="365" font-size="11" fill="#64748b" text-anchor="end">BOOLEAN</text>
+<text x="490" y="391" font-size="13" font-weight="400" fill="#0f172a">created_at</text>
+<text x="728" y="391" font-size="11" fill="#64748b" text-anchor="end">DATETIME</text>
+</g>
+<g><rect x="863" y="74" width="290" height="200" rx="10" fill="#0f172a" opacity=".08"/>
+<rect x="860" y="70" width="290" height="200" rx="10" fill="#fff" stroke="#b45309" stroke-width="2"/>
+<path d="M860,80 a10,10 0 0 1 10,-10 h270 a10,10 0 0 1 10,10 v34 h-290 z" fill="#b45309"/>
+<text x="874" y="98" font-size="16" font-weight="700" fill="#fff">OrderItem</text><text x="1138" y="98" font-size="11.5" fill="#fff" opacity=".85" text-anchor="end">table: order_item</text>
+<text x="872" y="131" font-size="10.5" font-weight="700" fill="#b45309">PK</text>
+<text x="900" y="131" font-size="13" font-weight="600" fill="#0f172a">id</text>
+<text x="1138" y="131" font-size="11" fill="#64748b" text-anchor="end">INTEGER</text>
+<rect x="862" y="140" width="286" height="26" fill="#f8fafc"/>
+<text x="872" y="157" font-size="10.5" font-weight="700" fill="#2563eb">FK</text>
+<text x="900" y="157" font-size="13" font-weight="600" fill="#0f172a">order_id</text>
+<text x="1138" y="157" font-size="11" fill="#64748b" text-anchor="end">INTEGER → order.id</text>
+<text x="872" y="183" font-size="10.5" font-weight="700" fill="#2563eb">FK</text>
+<text x="900" y="183" font-size="13" font-weight="600" fill="#0f172a">product_id</text>
+<text x="1138" y="183" font-size="11" fill="#64748b" text-anchor="end">INTEGER NULL → product.id</text>
+<rect x="862" y="192" width="286" height="26" fill="#f8fafc"/>
+<text x="900" y="209" font-size="13" font-weight="400" fill="#0f172a">product_name</text>
+<text x="1138" y="209" font-size="11" fill="#64748b" text-anchor="end">VARCHAR (snapshot)</text>
+<text x="900" y="235" font-size="13" font-weight="400" fill="#0f172a">unit_price</text>
+<text x="1138" y="235" font-size="11" fill="#64748b" text-anchor="end">DECIMAL (snapshot)</text>
+<rect x="862" y="244" width="286" height="26" fill="#f8fafc"/>
+<text x="900" y="261" font-size="13" font-weight="400" fill="#0f172a">quantity</text>
+<text x="1138" y="261" font-size="11" fill="#64748b" text-anchor="end">INTEGER</text>
+</g>
+<g><rect x="1253" y="74" width="290" height="278" rx="10" fill="#0f172a" opacity=".08"/>
+<rect x="1250" y="70" width="290" height="278" rx="10" fill="#fff" stroke="#be123c" stroke-width="2"/>
+<path d="M1250,80 a10,10 0 0 1 10,-10 h270 a10,10 0 0 1 10,10 v34 h-290 z" fill="#be123c"/>
+<text x="1264" y="98" font-size="16" font-weight="700" fill="#fff">Order</text><text x="1528" y="98" font-size="11.5" fill="#fff" opacity=".85" text-anchor="end">table: order</text>
+<text x="1262" y="131" font-size="10.5" font-weight="700" fill="#b45309">PK</text>
+<text x="1290" y="131" font-size="13" font-weight="600" fill="#0f172a">id</text>
+<text x="1528" y="131" font-size="11" fill="#64748b" text-anchor="end">INTEGER</text>
+<rect x="1252" y="140" width="286" height="26" fill="#f8fafc"/>
+<text x="1290" y="157" font-size="13" font-weight="400" fill="#0f172a">customer_name</text>
+<text x="1528" y="157" font-size="11" fill="#64748b" text-anchor="end">VARCHAR(150)</text>
+<text x="1290" y="183" font-size="13" font-weight="400" fill="#0f172a">email</text>
+<text x="1528" y="183" font-size="11" fill="#64748b" text-anchor="end">VARCHAR(150)</text>
+<rect x="1252" y="192" width="286" height="26" fill="#f8fafc"/>
+<text x="1290" y="209" font-size="13" font-weight="400" fill="#0f172a">phone</text>
+<text x="1528" y="209" font-size="11" fill="#64748b" text-anchor="end">VARCHAR(40)</text>
+<text x="1290" y="235" font-size="13" font-weight="400" fill="#0f172a">address</text>
+<text x="1528" y="235" font-size="11" fill="#64748b" text-anchor="end">TEXT</text>
+<rect x="1252" y="244" width="286" height="26" fill="#f8fafc"/>
+<text x="1290" y="261" font-size="13" font-weight="400" fill="#0f172a">total</text>
+<text x="1528" y="261" font-size="11" fill="#64748b" text-anchor="end">DECIMAL(10,2)</text>
+<text x="1290" y="287" font-size="13" font-weight="400" fill="#0f172a">status</text>
+<text x="1528" y="287" font-size="11" fill="#64748b" text-anchor="end">pending|paid|shipped|…</text>
+<rect x="1252" y="296" width="286" height="26" fill="#f8fafc"/>
+<text x="1290" y="313" font-size="13" font-weight="400" fill="#0f172a">created_at</text>
+<text x="1528" y="313" font-size="11" fill="#64748b" text-anchor="end">DATETIME</text>
+<text x="1290" y="339" font-size="13" font-weight="400" fill="#0f172a">updated_at</text>
+<text x="1528" y="339" font-size="11" fill="#64748b" text-anchor="end">DATETIME</text>
+</g>
+<g><rect x="1253" y="454" width="290" height="304" rx="10" fill="#0f172a" opacity=".08"/>
+<rect x="1250" y="450" width="290" height="304" rx="10" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+<path d="M1250,460 a10,10 0 0 1 10,-10 h270 a10,10 0 0 1 10,10 v34 h-290 z" fill="#7c3aed"/>
+<text x="1264" y="478" font-size="16" font-weight="700" fill="#fff">Payment</text><text x="1528" y="478" font-size="11.5" fill="#fff" opacity=".85" text-anchor="end">table: payment</text>
+<text x="1262" y="511" font-size="10.5" font-weight="700" fill="#b45309">PK</text>
+<text x="1290" y="511" font-size="13" font-weight="600" fill="#0f172a">id</text>
+<text x="1528" y="511" font-size="11" fill="#64748b" text-anchor="end">INTEGER</text>
+<rect x="1252" y="520" width="286" height="26" fill="#f8fafc"/>
+<text x="1262" y="537" font-size="10.5" font-weight="700" fill="#2563eb">FK</text>
+<text x="1290" y="537" font-size="13" font-weight="600" fill="#0f172a">order_id</text>
+<text x="1528" y="537" font-size="11" fill="#64748b" text-anchor="end">INTEGER UNIQUE → order.id</text>
+<text x="1290" y="563" font-size="13" font-weight="400" fill="#0f172a">method</text>
+<text x="1528" y="563" font-size="11" fill="#64748b" text-anchor="end">KHQR</text>
+<rect x="1252" y="572" width="286" height="26" fill="#f8fafc"/>
+<text x="1290" y="589" font-size="13" font-weight="400" fill="#0f172a">amount</text>
+<text x="1528" y="589" font-size="11" fill="#64748b" text-anchor="end">DECIMAL(10,2)</text>
+<text x="1290" y="615" font-size="13" font-weight="400" fill="#0f172a">currency</text>
+<text x="1528" y="615" font-size="11" fill="#64748b" text-anchor="end">USD | KHR</text>
+<rect x="1252" y="624" width="286" height="26" fill="#f8fafc"/>
+<text x="1290" y="641" font-size="13" font-weight="400" fill="#0f172a">bill_number</text>
+<text x="1528" y="641" font-size="11" fill="#64748b" text-anchor="end">VARCHAR(40)</text>
+<text x="1290" y="667" font-size="13" font-weight="400" fill="#0f172a">khqr_md5</text>
+<text x="1528" y="667" font-size="11" fill="#64748b" text-anchor="end">VARCHAR(64)</text>
+<rect x="1252" y="676" width="286" height="26" fill="#f8fafc"/>
+<text x="1290" y="693" font-size="13" font-weight="400" fill="#0f172a">status</text>
+<text x="1528" y="693" font-size="11" fill="#64748b" text-anchor="end">unverified|paid|refunded|void</text>
+<text x="1290" y="719" font-size="13" font-weight="400" fill="#0f172a">paid_at</text>
+<text x="1528" y="719" font-size="11" fill="#64748b" text-anchor="end">DATETIME NULL</text>
+<rect x="1252" y="728" width="286" height="26" fill="#f8fafc"/>
+<text x="1290" y="745" font-size="13" font-weight="400" fill="#0f172a">created_at</text>
+<text x="1528" y="745" font-size="11" fill="#64748b" text-anchor="end">DATETIME</text>
+</g>
+<g><rect x="43" y="454" width="290" height="174" rx="10" fill="#0f172a" opacity=".08"/>
+<rect x="40" y="450" width="290" height="174" rx="10" fill="#fff" stroke="#334155" stroke-width="2"/>
+<path d="M40,460 a10,10 0 0 1 10,-10 h270 a10,10 0 0 1 10,10 v34 h-290 z" fill="#334155"/>
+<text x="54" y="478" font-size="16" font-weight="700" fill="#fff">AdminUser</text><text x="318" y="478" font-size="11.5" fill="#fff" opacity=".85" text-anchor="end">table: admin_user</text>
+<text x="52" y="511" font-size="10.5" font-weight="700" fill="#b45309">PK</text>
+<text x="80" y="511" font-size="13" font-weight="600" fill="#0f172a">id</text>
+<text x="318" y="511" font-size="11" fill="#64748b" text-anchor="end">INTEGER</text>
+<rect x="42" y="520" width="286" height="26" fill="#f8fafc"/>
+<text x="80" y="537" font-size="13" font-weight="400" fill="#0f172a">username</text>
+<text x="318" y="537" font-size="11" fill="#64748b" text-anchor="end">VARCHAR(80) UNIQUE</text>
+<text x="80" y="563" font-size="13" font-weight="400" fill="#0f172a">password_hash</text>
+<text x="318" y="563" font-size="11" fill="#64748b" text-anchor="end">VARCHAR(255) (hashed)</text>
+<rect x="42" y="572" width="286" height="26" fill="#f8fafc"/>
+<text x="80" y="589" font-size="13" font-weight="400" fill="#0f172a">created_at</text>
+<text x="318" y="589" font-size="11" fill="#64748b" text-anchor="end">DATETIME</text>
+<text x="80" y="615" font-size="13" font-weight="400" fill="#0f172a">last_login</text>
+<text x="318" y="615" font-size="11" fill="#64748b" text-anchor="end">DATETIME NULL</text>
+</g>
+<text x="450" y="560" font-size="13" fill="#334155">• Deleting a product sets order_item.product_id to NULL; name &amp; price are kept as a snapshot,</text>
+<text x="450" y="580" font-size="13" fill="#334155">  so order history never breaks.</text>
+<text x="450" y="600" font-size="13" fill="#334155">• Each order has exactly one payment record (KHQR bill number + MD5).</text>
+<text x="450" y="620" font-size="13" fill="#334155">• AdminUser stores only a password hash (Werkzeug PBKDF2/scrypt), never the plain password.</text>
+</svg>

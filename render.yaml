@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: sien-serey-store
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 2 --preload
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: KHQR_ACCOUNT_ID
+        sync: false
+      - key: SHOP_NAME
+        value: Sien Serey Store

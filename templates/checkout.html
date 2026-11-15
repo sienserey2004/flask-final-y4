@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import csrf with context %}
+{% block title %}Checkout — {{ shop_name }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Checkout</h1>
+<form method="post" novalidate>
+  {{ csrf() }}
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm"><div class="card-body">
+        <h2 class="h5 mb-3">1. Your information</h2>
+        {% macro field(name, label, type='text', ph='') %}
+          <div class="mb-3">
+            <label class="form-label" for="{{ name }}">{{ label }}</label>
+            <input type="{{ type }}" id="{{ name }}" name="{{ name }}" placeholder="{{ ph }}" value="{{ form[name] }}"
+                   class="form-control {{ 'is-invalid' if errors.get(name) }}" required>
+            {% if errors.get(name) %}<div class="invalid-feedback">{{ errors[name] }}</div>{% endif %}
+          </div>
+        {% endmacro %}
+        {{ field('full_name','Full name') }}
+        {{ field('email','Email address','email','you@example.com') }}
+        {{ field('phone','Phone number','tel','012 345 678') }}
+        <div class="mb-0">
+          <label class="form-label" for="address">Shipping address</label>
+          <textarea id="address" name="address" rows="3" required class="form-control {{ 'is-invalid' if errors.get('address') }}">{{ form['address'] }}</textarea>
+          {% if errors.get('address') %}<div class="invalid-feedback">{{ errors['address'] }}</div>{% endif %}
+        </div>
+      </div></div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-sm mb-3"><div class="card-body">
+        <h2 class="h5 mb-3">Order summary</h2>
+        {% for l in lines %}
+          <div class="d-flex justify-content-between small mb-1"><span>{{ l.product.name }} × {{ l.qty }}</span><span>{{ l.subtotal|money }}</span></div>
+        {% endfor %}
+        <hr><div class="d-flex justify-content-between fw-bold fs-5"><span>Total</span><span class="price">{{ total|money }}</span></div>
+      </div></div>
+
+      <div class="card border-0 shadow-sm"><div class="card-body">
+        <h2 class="h5 mb-3">2. Pay with KHQR</h2>
+        <div class="khqr-box">
+          <div class="khqr-head">KHQR</div>
+          <img src="{{ url_for('khqr_png', r=ref) }}" alt="KHQR payment code">
+          <div class="fw-bold mt-2">{{ total|money }}</div>
+          <div class="small text-muted">Ref: {{ ref }}</div>
+        </div>
+        <p class="small text-muted text-center mt-2 mb-3">Scan with Bakong or any KHQR-supported banking app, then press the button below.</p>
+        {% if demo_mode %}<div class="alert alert-warning small py-2">Demo mode: payment is not verified automatically.</div>{% endif %}
+        <button class="btn btn-brand w-100 btn-lg"><i class="bi bi-check2-circle"></i> I have paid — Place order</button>
+      </div></div>
+    </div>
+  </div>
+</form>
+{% endblock %}
