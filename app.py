@@ -13,6 +13,7 @@ import qrcode
 from bakong_khqr import KHQR
 from flask import (Flask, abort, flash, redirect, render_template, request,
                    send_file, session, url_for)
+from flask_wtf.csrf import CSRFError, CSRFProtect
 from sqlalchemy import func, update
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import secure_filename
@@ -25,6 +26,9 @@ from limiter import (CART_LIMIT, CHECKOUT_LIMIT, LOGIN_LIMIT, PASSWORD_LIMIT,
 from models import (NEXT_STATUS, ORDER_STATUSES, REVENUE_STATUSES, AdminUser, Category,
                     Order, OrderItem, Payment, Product, db)
 
+# CSRF protection (Flask-WTF): every POST form must send {{ csrf_token() }} as "csrf_token"
+csrf = CSRFProtect()
+
 
 def create_app():
     app = Flask(__name__)
@@ -34,6 +38,7 @@ def create_app():
     os.makedirs(os.path.join(app.root_path, "instance"), exist_ok=True)
     db.init_app(app)
     limiter.init_app(app)
+    csrf.init_app(app)
 
     with app.app_context():
         db.create_all()
@@ -58,23 +63,13 @@ def ensure_admin(app):
 
 # --------------------------------------------------------------------------- helpers
 def register_helpers(app):
-    @app.before_request
-    def csrf_protect():
-        if request.method == "POST":
-            token = session.get("_csrf")
-            if not token or token != request.form.get("_csrf"):
-                abort(400, "Invalid or missing CSRF token")
-
     # {{ image_url(p.image) }} -> full link to the picture (S3 bucket or static/uploads)
     app.jinja_env.globals["image_url"] = storage.url
 
     @app.context_processor
     def inject_globals():
-        if "_csrf" not in session:
-            session["_csrf"] = secrets.token_hex(16)
         cart = session.get("cart", {})
         return {
-            "csrf_token": session["_csrf"],
             "shop_name": app.config["SHOP_NAME"],
             "brand_color": app.config["BRAND_COLOR"],
             "theme_key": app.config["THEME_KEY"],
@@ -103,6 +98,11 @@ def register_helpers(app):
     @app.errorhandler(400)
     def bad_request(e):
         return render_template("error.html", code=400, message=e.description), 400
+
+    @app.errorhandler(CSRFError)
+    def csrf_error(e):
+        return render_template("error.html", code=400,
+                               message="Your form expired or is invalid. Go back, refresh the page and try again."), 400
 
     @app.errorhandler(429)
     def too_many_requests(e):

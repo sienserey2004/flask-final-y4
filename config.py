@@ -51,6 +51,11 @@ class Config:
     # without scanning the KHQR. Never turn this on for a real shop -- anyone could order for free.
     TEST_PAYMENTS = os.environ.get("TEST_PAYMENTS", "0") == "1"
 
+    # CSRF protection (Flask-WTF CSRFProtect). Tokens are signed with SECRET_KEY.
+    # None = a token stays valid for the whole session, so a checkout page left open while
+    # the customer pays (or an admin form left open) still submits.
+    WTF_CSRF_TIME_LIMIT = None
+
     # Rate limiting (Flask-Limiter), per client IP. Several limits are separated by ";".
     RATELIMIT_ENABLED = os.environ.get("RATELIMIT_ENABLED", "1") == "1"
     RATELIMIT_DEFAULT = os.environ.get("RATELIMIT_DEFAULT", "200 per minute;2000 per hour")

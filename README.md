@@ -61,6 +61,10 @@ categories (add/rename/delete) · change password.
 uploaded on first run. The bucket can stay private: pages use signed links (valid 7 days, renewed automatically).
 To move an existing install's images into the bucket, run `python migrate_images.py` once.
 
+**CSRF protection (Flask-WTF `CSRFProtect`):** every POST form includes
+`<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">` (or the `csrf()` macro in `_macros.html`).
+A POST without a valid token is rejected with a 400 page. Tokens are signed with `SECRET_KEY`.
+
 **Rate limiting (Flask-Limiter):** each page has the default limit per IP (counted per page; CSS/JS files are not counted). Stricter limits (in `limiter.py`):
 admin login 5/min and 30/hour, change password 5/min, placing an order 10/min, order tracking 10/min,
 cart changes 60/min. Going over shows a 429 "Too many requests" page with a `Retry-After` header.

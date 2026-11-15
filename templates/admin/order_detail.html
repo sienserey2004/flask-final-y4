@@ -36,7 +36,7 @@
         <div class="d-flex gap-2 flex-wrap">
         {% for s in order.next_statuses %}
           <form method="post" action="{{ url_for('admin_order_status', oid=order.id) }}" {% if s == 'cancelled' %}onsubmit="return confirm('Cancel this order? Stock will be returned.')"{% endif %}>
-            <input type="hidden" name="_csrf" value="{{ csrf_token }}"><input type="hidden" name="status" value="{{ s }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="status" value="{{ s }}">
             <button class="btn btn-sm {{ 'btn-outline-danger' if s == 'cancelled' else 'btn-brand' }}">
               {{ {'paid':'Mark payment received','shipped':'Mark as shipped','delivered':'Mark as delivered','cancelled':'Cancel order'}[s] }}</button>
           </form>

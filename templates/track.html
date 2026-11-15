@@ -38,7 +38,7 @@
     <p class="small text-muted">Enter <strong>any one</strong> order number and the phone number you used at checkout.
       We'll show every order placed with that phone number.</p>
     <form method="post" action="{{ url_for('track_order') }}" class="row g-3 align-items-end">
-      <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="col-sm-4">
         <label class="form-label" for="order_id">Order number</label>
         <div class="input-group"><span class="input-group-text">#</span>
@@ -57,7 +57,7 @@
 
   {% if orders %}
   <form method="post" action="{{ url_for('track_forget') }}" class="text-center mt-3">
-    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <button class="btn btn-link btn-sm text-muted"><i class="bi bi-eye-slash"></i> Using a shared computer? Hide my orders from this browser</button>
   </form>
   {% endif %}
