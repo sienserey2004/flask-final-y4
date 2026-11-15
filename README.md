@@ -50,3 +50,4 @@ categories (add/rename/delete) · change password.
 1. Push to GitHub. 2. Render → New → Blueprint (uses `render.yaml`) or a Web Service with start command `gunicorn app:app --preload`.
 3. Set `ADMIN_PASSWORD` and `KHQR_ACCOUNT_ID`.
 Note: free hosts have an ephemeral disk, so SQLite data and uploaded images reset on redeploy. Use a persistent disk or `DATABASE_URL` (Postgres) for permanent data.
+# flask-final-y4
