@@ -35,6 +35,9 @@ class Config:
     KHQR_PHONE = os.environ.get("KHQR_PHONE", "85512345678")
     # Optional: with a Bakong developer token the server verifies payment by MD5
     BAKONG_TOKEN = os.environ.get("BAKONG_TOKEN", "")
+    # Testing only: shows a "Test payment" button at checkout that places the order as paid
+    # without scanning the KHQR. Never turn this on for a real shop -- anyone could order for free.
+    TEST_PAYMENTS = os.environ.get("TEST_PAYMENTS", "0") == "1"
 
     # Admin dashboard
     LOW_STOCK_THRESHOLD = int(os.environ.get("LOW_STOCK_THRESHOLD", 5))  # "low stock" at or below this

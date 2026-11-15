@@ -48,6 +48,10 @@
         <p class="small text-muted text-center mt-2 mb-3">Scan with Bakong or any KHQR-supported banking app, then press the button below.</p>
         {% if demo_mode %}<div class="alert alert-warning small py-2">Demo mode: payment is not verified automatically.</div>{% endif %}
         <button class="btn btn-brand w-100 btn-lg"><i class="bi bi-check2-circle"></i> I have paid — Place order</button>
+        {% if test_payments %}
+          <button name="test_pay" value="1" class="btn btn-outline-secondary w-100 mt-2"><i class="bi bi-bug"></i> Test payment — place order without paying</button>
+          <div class="small text-muted text-center mt-1">Testing only. The order is saved as paid with payment method “TEST”.</div>
+        {% endif %}
       </div></div>
     </div>
   </div>

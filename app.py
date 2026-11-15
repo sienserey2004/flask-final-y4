@@ -338,7 +338,9 @@ def register_public(app):
                 errors["address"] = "Shipping address is required."
 
             if not errors:
-                pay_status = check_payment(app, md5)
+                # the "Test payment" button only works when TEST_PAYMENTS is turned on
+                test_pay = app.config["TEST_PAYMENTS"] and request.form.get("test_pay") == "1"
+                pay_status = "paid" if test_pay else check_payment(app, md5)
                 if pay_status == "unpaid":
                     flash("We could not confirm your KHQR payment yet. "
                           "Please complete the payment and try again.", "warning")
@@ -368,7 +370,7 @@ def register_public(app):
                             product_id=p.id, product_name=p.name,
                             unit_price=p.price, quantity=ln["qty"]))
                     order.payment = Payment(
-                        method="KHQR", amount=total, currency=app.config["KHQR_CURRENCY"],
+                        method="TEST" if test_pay else "KHQR", amount=total, currency=app.config["KHQR_CURRENCY"],
                         bill_number=ref, khqr_md5=md5,
                         status="paid" if paid else "unverified",
                         paid_at=datetime.utcnow() if paid else None)
@@ -382,7 +384,8 @@ def register_public(app):
 
         return render_template("checkout.html", lines=lines, total=total,
                                form=form, errors=errors, ref=ref,
-                               demo_mode=not app.config["BAKONG_TOKEN"])
+                               demo_mode=not app.config["BAKONG_TOKEN"],
+                               test_payments=app.config["TEST_PAYMENTS"])
 
     @app.route("/khqr.png")
     def khqr_png():

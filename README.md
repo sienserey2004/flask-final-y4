@@ -44,6 +44,7 @@ categories (add/rename/delete) · change password.
 | `KHQR_MERCHANT_NAME` / `KHQR_MERCHANT_CITY` | Shown in the payer's bank app | store name / Phnom Penh |
 | `KHQR_CURRENCY` | `USD` or `KHR` | USD |
 | `BAKONG_TOKEN` | Optional Bakong API token — verifies payments automatically | empty (demo mode) |
+| `TEST_PAYMENTS` | `1` shows a **Test payment** button at checkout that places the order as paid without scanning (testing only, never on a real shop) | 0 |
 | `DATABASE_URL` | Optional (e.g. Postgres). Defaults to SQLite in `instance/` | SQLite |
 | `LOW_STOCK_THRESHOLD` | Dashboard lists active products with this many or fewer in stock | 5 |
 | `TZ_OFFSET_HOURS` | Shop's time zone vs UTC, used for "per day" numbers on the dashboard | 7 (Cambodia) |
