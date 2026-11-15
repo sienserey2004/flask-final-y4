@@ -1,4 +1,4 @@
-/* Sien Serey Store — concept: steel blue + slate, Outfit type, pill buttons */
+/* Angkor Wellness — concept: steel blue + slate, Outfit type, pill buttons */
 :root{--brand:#2f6f9f;--brand-d:#245a83;--sky:#4a9fd8;--slate:#3d566d;--slate-d:#2e4458;--ice:#eef6fc;--ink:#1d2a36;--muted:#64748b}
 body.t-serey{font-family:'Outfit',system-ui,sans-serif;background:#fff;color:var(--ink)}
 .t-serey h1,.t-serey h2,.t-serey h3{font-weight:600;letter-spacing:-.3px}
@@ -10,6 +10,8 @@ body.t-serey{font-family:'Outfit',system-ui,sans-serif;background:#fff;color:var
 .sx-logo .txt{font-weight:800;font-style:italic;font-size:1.25rem;letter-spacing:.5px;line-height:1}
 .sx-logo small{display:block;font-style:normal;font-weight:500;font-size:.68rem;letter-spacing:1.5px;color:var(--muted);margin-top:3px}
 .sx-logo.light{color:#fff}.sx-logo.light .mark{background:#fff;color:var(--slate)}.sx-logo.light small{color:#a9bccc}
+@media (max-width:575.98px){.sx-head .sx-logo{gap:8px}.sx-head .sx-logo .mark{width:34px;height:34px;font-size:1.05rem}.sx-head .sx-logo .txt{font-size:1rem;white-space:nowrap}.sx-head .sx-logo small{display:none}}
+@media (max-width:379.98px){.sx-head .sx-logo .txt{font-size:.9rem;letter-spacing:0}}
 .sx-nav{gap:30px;align-items:center}.sx-nav a{color:var(--ink);text-decoration:none;font-size:.95rem}
 .sx-nav a:hover{color:var(--brand)}.sx-nav .dropdown-item{font-size:.9rem;padding:8px 16px}.sx-nav .dropdown-item i{color:var(--brand);margin-right:6px}
 .sx-icon{position:relative;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:var(--slate);font-size:1.2rem;text-decoration:none;background:#fff;border:1px solid #d6e5f1}

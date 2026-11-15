@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}{{ shop_name }} — Health & Wellness{% endblock %}</title>
+  <title>{% block title %}{{ shop_name }} — Vitamins, Fitness & Herbal Tea{% endblock %}</title>
   {% block meta %}<meta name="description" content="{{ shop_name }}: vitamins, fitness gear, herbal tea and aromatherapy delivered in Cambodia. Pay with KHQR.">{% endblock %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
 <body class="t-serey">
 <header class="sx-head sticky-top">
   <div class="container d-flex align-items-center gap-3 py-3">
-    <a class="sx-logo" href="{{ url_for('home') }}"><span class="mark"><i class="bi bi-heart-pulse-fill"></i></span><span class="txt">SIEN SEREY<small>Health &amp; Wellness</small></span></a>
+    <a class="sx-logo" href="{{ url_for('home') }}"><span class="mark"><i class="bi bi-heart-pulse-fill"></i></span><span class="txt">{{ shop_name|upper }}<small>Vitamins · Fitness · Herbal Tea</small></span></a>
     <nav class="sx-nav d-none d-lg-flex mx-auto">
       <a href="{{ url_for('home') }}">Home</a>
       <a href="{{ url_for('shop') }}">Shop</a>
@@ -51,7 +51,7 @@
 <footer class="sx-foot">
   <div class="container py-5">
     <div class="row g-4">
-      <div class="col-md-4"><a class="sx-logo light" href="{{ url_for('home') }}"><span class="mark"><i class="bi bi-heart-pulse-fill"></i></span><span class="txt">SIEN SEREY<small>Health &amp; Wellness</small></span></a>
+      <div class="col-md-4"><a class="sx-logo light" href="{{ url_for('home') }}"><span class="mark"><i class="bi bi-heart-pulse-fill"></i></span><span class="txt">{{ shop_name|upper }}<small>Vitamins · Fitness · Herbal Tea</small></span></a>
         <p class="small mt-3">Everyday wellness made simple: vitamins, home-fitness gear, herbal teas and aromatherapy, delivered across Cambodia.</p></div>
       <div class="col-6 col-md-2"><h6>Shop</h6><a href="{{ url_for('shop') }}">All products</a><a href="{{ url_for('shop', deals=1) }}">Offers</a><a href="{{ url_for('cart') }}">Cart</a><a href="{{ url_for('track_order') }}">My orders</a></div>
       <div class="col-6 col-md-3"><h6>Categories</h6>{% for name, n in categories %}<a href="{{ url_for('shop', category=name) }}">{{ name }}</a>{% endfor %}</div>

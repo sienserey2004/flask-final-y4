@@ -1,4 +1,4 @@
-# Sien Serey Store — Mini E-commerce (Final Project ADV PP)
+# Angkor Wellness — Mini E-commerce (Final Project ADV PP)
 
 Flask + SQLAlchemy web store: browse products, cart, guest checkout with **KHQR** payment,
 and an admin panel for products, categories and orders.
@@ -37,7 +37,7 @@ categories (add/rename/delete) · change password.
 ## Configuration (environment variables)
 | Variable | Purpose | Default |
 |---|---|---|
-| `SHOP_NAME` | Store name shown in the UI | Sien Serey Store |
+| `SHOP_NAME` | Store name shown in the UI | Angkor Wellness |
 | `SECRET_KEY` | Session signing key | dev value (set your own!) |
 | `ADMIN_USERNAME` / `ADMIN_PASSWORD` | First admin account (created on first run) | admin / admin123 |
 | `KHQR_ACCOUNT_ID` | Your Bakong account, e.g. `name@bank` | placeholder — **change it** |

@@ -1,4 +1,4 @@
-# Sample catalog for Sien Serey Store (Health & Wellness).
+# Sample catalog for Angkor Wellness (Health & Wellness).
 # "unsplash" = photo id on unsplash.com (free to use under the Unsplash License).
 # Run `python download_images.py` once to save the photos into seed_images/.
 # Descriptions are general product info, not medical advice.
