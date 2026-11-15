@@ -1,0 +1,193 @@
+{% extends 'admin/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% macro delta(pct) -%}
+  {% if pct is not none %}
+    <div class="small mt-1"><span class="fw-semibold {{ 'text-success' if pct >= 0 else 'text-danger' }}"><i class="bi bi-arrow-{{ 'up' if pct >= 0 else 'down' }}-short"></i>{{ '%+.1f'|format(pct) }}%</span>
+    <span class="text-muted">vs previous {{ s.days }} days</span></div>
+  {% elif s.has_prev %}
+    <div class="small mt-1 text-muted">No data for the previous {{ s.days }} days</div>
+  {% endif %}
+{%- endmacro %}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <div>
+    <h1 class="h3 mb-0">Dashboard</h1>
+    <div class="small text-muted">{{ s.period_from.strftime('%b %d, %Y') }} – {{ s.period_to.strftime('%b %d, %Y') }}</div>
+  </div>
+  <ul class="nav nav-pills">
+    {% for key, label in s.ranges.items() %}
+      <li class="nav-item"><a class="nav-link py-1 {{ 'active' if s.range == key }}" href="{{ url_for('admin_dashboard', range=key) }}">{{ label }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+
+{# ---- KPI row #}
+<div class="row g-3 mb-3">
+  <div class="col-6 col-xl-3"><div class="card dash-card h-100"><div class="card-body">
+    <div class="kpi-label"><i class="bi bi-cash-coin"></i> Revenue</div>
+    <div class="kpi-value">{{ s.revenue|money }}</div>
+    {{ delta(s.revenue_change) }}
+  </div></div></div>
+  <div class="col-6 col-xl-3"><div class="card dash-card h-100"><div class="card-body">
+    <div class="kpi-label"><i class="bi bi-bag-check"></i> Orders placed</div>
+    <div class="kpi-value">{{ s.placed }}</div>
+    {{ delta(s.placed_change) }}
+  </div></div></div>
+  <div class="col-6 col-xl-3"><div class="card dash-card h-100"><div class="card-body">
+    <div class="kpi-label"><i class="bi bi-receipt-cutoff"></i> Avg. order value</div>
+    <div class="kpi-value">{{ s.aov|money }}</div>
+    {{ delta(s.aov_change) }}
+  </div></div></div>
+  <div class="col-6 col-xl-3"><div class="card dash-card h-100"><div class="card-body">
+    <div class="kpi-label"><i class="bi bi-bell"></i> Waiting on you</div>
+    <div class="kpi-value">{{ s.pending_count + s.to_ship_count }}</div>
+    <div class="small mt-1">
+      <a class="text-warning-emphasis text-decoration-none" href="{{ url_for('admin_orders', status='pending') }}">{{ s.pending_count }} to check payment</a> ·
+      <a class="text-info-emphasis text-decoration-none" href="{{ url_for('admin_orders', status='paid') }}">{{ s.to_ship_count }} to ship</a>
+    </div>
+  </div></div></div>
+</div>
+
+{# ---- charts #}
+<div class="row g-3 mb-3">
+  <div class="col-lg-8"><div class="card dash-card h-100">
+    <div class="card-header">Revenue per day</div>
+    <div class="card-body"><div class="chart-box">
+      {% if s.placed %}<canvas id="revChart" aria-label="Revenue per day"></canvas>
+      {% else %}<div class="dash-empty">No orders in this period yet.</div>{% endif %}
+    </div></div>
+  </div></div>
+  <div class="col-lg-4"><div class="card dash-card h-100">
+    <div class="card-header">Orders by status</div>
+    <div class="card-body"><div class="chart-box">
+      {% if s.status_counts %}<canvas id="statusChart" aria-label="Orders by status"></canvas>
+      {% else %}<div class="dash-empty">No orders in this period yet.</div>{% endif %}
+    </div></div>
+  </div></div>
+</div>
+
+{# ---- recent orders + action lists #}
+<div class="row g-3 mb-3">
+  <div class="col-lg-7"><div class="card dash-card h-100">
+    <div class="card-header d-flex justify-content-between">Recent orders
+      <a class="small fw-normal" href="{{ url_for('admin_orders') }}">All orders →</a></div>
+    <div class="table-responsive">
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th class="ps-3">Order</th><th>Customer</th><th class="text-end">Total</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+        <tbody>
+        {% for o in s.recent_orders %}
+          <tr><td class="ps-3"><a href="{{ url_for('admin_order_detail', oid=o.id) }}">#{{ o.id }}</a></td>
+            <td>{{ o.customer_name }}</td>
+            <td class="text-end">{{ o.total|money }}</td>
+            <td><span class="badge text-bg-{{ o.status_badge }}">{{ o.status|capitalize }}</span></td>
+            <td class="pe-3 small text-muted text-nowrap">{{ o.created_at.strftime('%Y-%m-%d %H:%M') }}</td></tr>
+        {% else %}<tr><td colspan="5" class="text-center text-muted py-4">No orders yet.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div></div>
+
+  <div class="col-lg-5 d-flex flex-column gap-3">
+    <div class="card dash-card">
+      <div class="card-header d-flex justify-content-between">Needs action
+        {% if s.needs_action_total %}<span class="badge text-bg-danger">{{ s.needs_action_total }}</span>{% endif %}</div>
+      <div class="list-group list-group-flush">
+        {% for r in s.needs_action %}
+          <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{{ url_for('admin_order_detail', oid=r.order.id) }}">
+            <span><strong>#{{ r.order.id }}</strong> {{ r.order.customer_name }}<br><span class="small text-muted">{{ r.reason }}</span></span>
+            <span class="small text-danger text-nowrap"><i class="bi bi-clock"></i> {{ r.waited }}</span>
+          </a>
+        {% else %}<div class="list-group-item text-muted small"><i class="bi bi-check2-circle text-success"></i> All caught up. No order is overdue.</div>{% endfor %}
+      </div>
+    </div>
+    <div class="card dash-card">
+      <div class="card-header d-flex justify-content-between">Low stock <span class="small fw-normal text-muted">{{ s.low_stock_threshold }} or fewer left</span></div>
+      <div class="list-group list-group-flush">
+        {% for p in s.low_stock %}
+          <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{{ url_for('admin_product_edit', pid=p.id) }}">
+            <span>{{ p.name }}<br><span class="small text-muted">{{ p.category }}</span></span>
+            {% if p.stock == 0 %}<span class="badge text-bg-danger">Out of stock</span>
+            {% else %}<span class="badge text-bg-warning">{{ p.stock }} left</span>{% endif %}
+          </a>
+        {% else %}<div class="list-group-item text-muted small"><i class="bi bi-check2-circle text-success"></i> Every active product is well stocked.</div>{% endfor %}
+        {% if s.low_stock_total > s.low_stock|length %}
+          <a class="list-group-item small text-center" href="{{ url_for('admin_products') }}">+ {{ s.low_stock_total - s.low_stock|length }} more</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{# ---- best sellers + categories #}
+<div class="row g-3">
+  <div class="col-lg-6"><div class="card dash-card h-100">
+    <div class="card-header">Top products</div>
+    <div class="table-responsive">
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th class="ps-3">#</th><th>Product</th><th class="text-end">Units</th><th class="text-end pe-3">Revenue</th></tr></thead>
+        <tbody>
+        {% for r in s.top_products %}
+          <tr><td class="ps-3 text-muted">{{ loop.index }}</td><td>{{ r.product_name }}</td>
+            <td class="text-end">{{ r.units }}</td><td class="text-end pe-3">{{ r.revenue|money }}</td></tr>
+        {% else %}<tr><td colspan="4" class="text-center text-muted py-4">No sales in this period yet.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div></div>
+  <div class="col-lg-6"><div class="card dash-card h-100">
+    <div class="card-header">Sales by category</div>
+    <div class="card-body">
+      {% for r in s.by_category %}
+        {% set share = (r.revenue / s.cat_total * 100) if s.cat_total else 0 %}
+        <div class="mb-3">
+          <div class="d-flex justify-content-between small">
+            <span><i class="bi {{ r.name|cat_icon }}"></i> {{ r.name }} <span class="text-muted">· {{ r.units }} sold</span></span>
+            <span><strong>{{ r.revenue|money }}</strong> <span class="text-muted">{{ '%.0f'|format(share) }}%</span></span>
+          </div>
+          <div class="progress share-bar mt-1" role="progressbar" aria-valuenow="{{ share|round|int }}" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar" style="width: {{ '%.1f'|format(share) }}%"></div>
+          </div>
+        </div>
+      {% else %}<div class="text-center text-muted py-3">No sales in this period yet.</div>{% endfor %}
+    </div>
+  </div></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+(() => {
+  const D = {{ s.chart|tojson }};
+  const BRAND = {{ brand_color|tojson }};
+  const money = v => '$' + Number(v).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+  Chart.defaults.color = '#6b7280';
+
+  const rev = document.getElementById('revChart');
+  if (rev) {
+    const datasets = [{label: 'Revenue', data: D.revenue, backgroundColor: BRAND, borderRadius: 3, order: 2}];
+    if (D.prev_revenue) datasets.push({type: 'line', label: 'Previous period', data: D.prev_revenue,
+      borderColor: '#9ca3af', borderDash: [5, 4], borderWidth: 1.5, pointRadius: 0, tension: .3, order: 1});
+    new Chart(rev, {type: 'bar', data: {labels: D.labels, datasets}, options: {
+      maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
+      plugins: {
+        legend: {display: !!D.prev_revenue, position: 'bottom', labels: {boxWidth: 12}},
+        tooltip: {callbacks: {
+          label: c => `${c.dataset.label}: ${money(c.parsed.y)}`,
+          footer: items => `Orders: ${D.orders[items[0].dataIndex]}`}}},
+      scales: {x: {grid: {display: false}, ticks: {autoSkip: true, maxTicksLimit: 10, maxRotation: 0}},
+               y: {beginAtZero: true, grid: {color: '#f1f5f9'}, ticks: {callback: v => '$' + v}}}}});
+  }
+
+  const st = document.getElementById('statusChart');
+  if (st) new Chart(st, {type: 'bar',
+    data: {labels: D.status.labels, datasets: [{label: 'Orders', data: D.status.counts,
+           backgroundColor: D.status.colors, borderRadius: 3}]},
+    options: {indexAxis: 'y', maintainAspectRatio: false, plugins: {legend: {display: false}},
+              scales: {x: {beginAtZero: true, ticks: {precision: 0}, grid: {color: '#f1f5f9'}},
+                       y: {grid: {display: false}}}}});
+})();
+</script>
+{% endblock %}

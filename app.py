@@ -18,8 +18,9 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import secure_filename
 
 from config import Config
-from models import (NEXT_STATUS, ORDER_STATUSES, AdminUser, Category, Order,
-                    OrderItem, Payment, Product, db)
+from dashboard import RANGES, dashboard_stats
+from models import (NEXT_STATUS, ORDER_STATUSES, REVENUE_STATUSES, AdminUser, Category,
+                    Order, OrderItem, Payment, Product, db)
 
 
 def create_app():
@@ -491,7 +492,7 @@ def register_admin(app):
                 user.last_login = datetime.utcnow()
                 db.session.commit()
                 nxt = request.args.get("next", "")
-                return redirect(nxt if nxt.startswith("/admin") else url_for("admin_products"))
+                return redirect(nxt if nxt.startswith("/admin") else url_for("admin_dashboard"))
             _failed_logins[ip].append(now)
             flash("Invalid username or password.", "danger")
         return render_template("admin/login.html")
@@ -517,13 +518,21 @@ def register_admin(app):
                 user.set_password(new)
                 db.session.commit()
                 flash("Password changed.", "success")
-                return redirect(url_for("admin_products"))
+                return redirect(url_for("admin_dashboard"))
         return render_template("admin/password.html")
 
     @app.route("/admin")
     @admin_required
     def admin_index():
-        return redirect(url_for("admin_orders"))
+        return redirect(url_for("admin_dashboard"))
+
+    @app.route("/admin/dashboard")
+    @admin_required
+    def admin_dashboard():
+        rng = request.args.get("range", "30d")
+        if rng not in RANGES:
+            rng = "30d"
+        return render_template("admin/dashboard.html", s=dashboard_stats(rng))
 
     # ---- products
     @app.route("/admin/products")
@@ -691,7 +700,7 @@ def register_admin(app):
         orders = q.order_by(Order.created_at.desc()).all()
         counts = dict(db.session.query(Order.status, func.count(Order.id)).group_by(Order.status).all())
         revenue = (db.session.query(func.coalesce(func.sum(Order.total), 0))
-                   .filter(Order.status.in_(["paid", "shipped", "delivered"])).scalar())
+                   .filter(Order.status.in_(REVENUE_STATUSES)).scalar())
         return render_template("admin/orders.html", orders=orders, status=status,
                                counts=counts, revenue=revenue, statuses=ORDER_STATUSES)
 

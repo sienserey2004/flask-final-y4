@@ -10,6 +10,8 @@ pip install -r requirements.txt
 python download_images.py                          # optional: real product photos (if this store has them)
 python app.py                                      # http://127.0.0.1:5000
 ```
+Optional demo data for the admin dashboard: `python seed_orders.py` adds 80 random orders over the last 60 days
+(`python seed_orders.py --clear` removes them again and puts their stock back).
 On first run the database, the categories, the sample products and the first admin account are created automatically.
 To start over, delete `instance/shop.db` and restart.
 
@@ -22,7 +24,9 @@ To start over, delete `instance/shop.db` and restart.
 **Customer:** home page with hero, categories, deals, featured and new arrivals · shop page with category filter, search, sort and "hot deals" ·
 product detail with stock, quantity, related products, Facebook/Telegram share · cart (update/remove) · guest checkout with KHQR · order confirmation · **My orders** (order history with status timeline and item details; on a new device, one order number + phone shows all orders for that phone).
 
-**Admin:** orders dashboard (revenue, counts, filter by status) · order detail with payment info and status actions
+**Admin:** dashboard (revenue, orders and average order value vs the previous period, revenue-per-day and status charts,
+recent orders, overdue orders that need action, low stock, top products, sales by category; 7 / 30 / 90 days or all time) ·
+orders list (revenue, counts, filter by status) · order detail with payment info and status actions
 (*Mark payment received → Mark as shipped → Mark as delivered*, or *Cancel* which returns stock) ·
 products (add/edit/delete, image upload, category, old price for discounts, featured, active/inactive) ·
 categories (add/rename/delete) · change password.
@@ -41,6 +45,8 @@ categories (add/rename/delete) · change password.
 | `KHQR_CURRENCY` | `USD` or `KHR` | USD |
 | `BAKONG_TOKEN` | Optional Bakong API token — verifies payments automatically | empty (demo mode) |
 | `DATABASE_URL` | Optional (e.g. Postgres). Defaults to SQLite in `instance/` | SQLite |
+| `LOW_STOCK_THRESHOLD` | Dashboard lists active products with this many or fewer in stock | 5 |
+| `TZ_OFFSET_HOURS` | Shop's time zone vs UTC, used for "per day" numbers on the dashboard | 7 (Cambodia) |
 | `SEED_DOWNLOAD_IMAGES` | `0` to skip downloading photos on first run | 1 |
 
 **KHQR:** set `KHQR_ACCOUNT_ID` to your real Bakong account so the QR pays you. Without `BAKONG_TOKEN` the app runs in

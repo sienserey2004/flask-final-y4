@@ -35,3 +35,7 @@ class Config:
     KHQR_PHONE = os.environ.get("KHQR_PHONE", "85512345678")
     # Optional: with a Bakong developer token the server verifies payment by MD5
     BAKONG_TOKEN = os.environ.get("BAKONG_TOKEN", "")
+
+    # Admin dashboard
+    LOW_STOCK_THRESHOLD = int(os.environ.get("LOW_STOCK_THRESHOLD", 5))  # "low stock" at or below this
+    TZ_OFFSET_HOURS = int(os.environ.get("TZ_OFFSET_HOURS", 7))  # shop's local time = UTC+7 (Cambodia)

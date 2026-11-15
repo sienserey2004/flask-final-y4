@@ -26,6 +26,8 @@ NEXT_STATUS = {
 STATUS_BADGE = {"pending": "warning", "paid": "info", "shipped": "primary",
                 "delivered": "success", "cancelled": "secondary"}
 PAYMENT_STATUSES = ["unverified", "paid", "refunded", "void"]
+# orders in these states count as money received (revenue)
+REVENUE_STATUSES = ["paid", "shipped", "delivered"]
 
 
 class Category(db.Model):

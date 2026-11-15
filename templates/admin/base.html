@@ -13,6 +13,7 @@
   <aside class="admin-side py-3">
     <div class="text-white fw-bold px-3 mb-1"><i class="bi bi-shop"></i> {{ shop_name }} Admin</div>
     <div class="small text-secondary px-3 mb-3"><i class="bi bi-person-circle"></i> {{ admin_name }}</div>
+    <a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if request.endpoint == 'admin_dashboard' }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
     <a href="{{ url_for('admin_orders') }}" class="{{ 'active' if request.endpoint.startswith('admin_order') }}"><i class="bi bi-receipt"></i> Orders</a>
     <a href="{{ url_for('admin_products') }}" class="{{ 'active' if request.endpoint.startswith('admin_product') }}"><i class="bi bi-box-seam"></i> Products</a>
     <a href="{{ url_for('admin_categories') }}" class="{{ 'active' if request.endpoint.startswith('admin_categor') }}"><i class="bi bi-tags"></i> Categories</a>
@@ -31,5 +32,6 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
 </body>
 </html>
