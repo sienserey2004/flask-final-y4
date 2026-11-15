@@ -1,7 +1,12 @@
 import json
 import os
 
+from dotenv import load_dotenv
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+# Local settings from .env (if present). Real environment variables, e.g. on Render, win.
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 with open(os.path.join(BASE_DIR, "theme.json"), encoding="utf-8") as _f:
     THEME = json.load(_f)
 
