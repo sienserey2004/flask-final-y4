@@ -51,6 +51,13 @@ class Config:
     # without scanning the KHQR. Never turn this on for a real shop -- anyone could order for free.
     TEST_PAYMENTS = os.environ.get("TEST_PAYMENTS", "0") == "1"
 
+    # Rate limiting (Flask-Limiter), per client IP. Several limits are separated by ";".
+    RATELIMIT_ENABLED = os.environ.get("RATELIMIT_ENABLED", "1") == "1"
+    RATELIMIT_DEFAULT = os.environ.get("RATELIMIT_DEFAULT", "200 per minute;2000 per hour")
+    # memory:// = counters live in each worker. Use redis://... to share them between workers/servers.
+    RATELIMIT_STORAGE_URI = os.environ.get("RATELIMIT_STORAGE_URI", "memory://")
+    RATELIMIT_HEADERS_ENABLED = True  # send X-RateLimit-* and Retry-After headers
+
     # Admin dashboard
     LOW_STOCK_THRESHOLD = int(os.environ.get("LOW_STOCK_THRESHOLD", 5))  # "low stock" at or below this
     TZ_OFFSET_HOURS = int(os.environ.get("TZ_OFFSET_HOURS", 7))  # shop's local time = UTC+7 (Cambodia)

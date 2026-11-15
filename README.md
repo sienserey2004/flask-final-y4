@@ -53,10 +53,17 @@ categories (add/rename/delete) · change password.
 | `AWS_ACCESS_KEY` / `AWS_SECRET_KEY` | Credentials that can put/delete objects in the bucket | empty |
 | `ENDPOINT_STORAGE_URL` | Public address of the bucket (used when `S3_PUBLIC_READ=1`) | `<BUCKET>.s3.<REGION>.amazonaws.com` |
 | `S3_PUBLIC_READ` | `1` if the bucket allows public read (plain links); `0` gives signed links that work with a private bucket | 0 |
+| `RATELIMIT_ENABLED` | `0` turns rate limiting off | 1 |
+| `RATELIMIT_DEFAULT` | Requests allowed per client IP on each page (`;` between limits) | `200 per minute;2000 per hour` |
+| `RATELIMIT_STORAGE_URI` | Where request counts are kept: `memory://` or `redis://host:6379` (shared by all workers) | `memory://` |
 
 **Images on S3:** with `BUCKET` and the AWS keys set, uploads go to the bucket under `uploads/` and seed photos are
 uploaded on first run. The bucket can stay private: pages use signed links (valid 7 days, renewed automatically).
 To move an existing install's images into the bucket, run `python migrate_images.py` once.
+
+**Rate limiting (Flask-Limiter):** each page has the default limit per IP (counted per page; CSS/JS files are not counted). Stricter limits (in `limiter.py`):
+admin login 5/min and 30/hour, change password 5/min, placing an order 10/min, order tracking 10/min,
+cart changes 60/min. Going over shows a 429 "Too many requests" page with a `Retry-After` header.
 
 **KHQR:** set `KHQR_ACCOUNT_ID` to your real Bakong account so the QR pays you. Without `BAKONG_TOKEN` the app runs in
 *demo mode*: orders start as **pending** and the admin confirms the payment manually.

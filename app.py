@@ -20,6 +20,8 @@ from werkzeug.utils import secure_filename
 import storage
 from config import Config
 from dashboard import RANGES, dashboard_stats
+from limiter import (CART_LIMIT, CHECKOUT_LIMIT, LOGIN_LIMIT, PASSWORD_LIMIT,
+                     TRACK_LIMIT, limiter)
 from models import (NEXT_STATUS, ORDER_STATUSES, REVENUE_STATUSES, AdminUser, Category,
                     Order, OrderItem, Payment, Product, db)
 
@@ -31,6 +33,7 @@ def create_app():
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
     os.makedirs(os.path.join(app.root_path, "instance"), exist_ok=True)
     db.init_app(app)
+    limiter.init_app(app)
 
     with app.app_context():
         db.create_all()
@@ -100,6 +103,11 @@ def register_helpers(app):
     @app.errorhandler(400)
     def bad_request(e):
         return render_template("error.html", code=400, message=e.description), 400
+
+    @app.errorhandler(429)
+    def too_many_requests(e):
+        return render_template("error.html", code=429,
+                               message="Too many requests. Please wait a minute and try again."), 429
 
     @app.errorhandler(413)
     def too_large(e):
@@ -266,6 +274,7 @@ def register_public(app):
         return render_template("product_detail.html", p=p, link=link, related=related)
 
     @app.post("/cart/add/<int:pid>")
+    @limiter.limit(CART_LIMIT)
     def cart_add(pid):
         p = db.get_or_404(Product, pid)
         try:
@@ -289,6 +298,7 @@ def register_public(app):
         return render_template("cart.html", lines=lines, total=total)
 
     @app.post("/cart/update")
+    @limiter.limit(CART_LIMIT)
     def cart_update():
         cart = session.get("cart", {})
         for key, val in request.form.items():
@@ -309,6 +319,7 @@ def register_public(app):
         return redirect(url_for("cart"))
 
     @app.post("/cart/remove/<int:pid>")
+    @limiter.limit(CART_LIMIT)
     def cart_remove(pid):
         cart = session.get("cart", {})
         cart.pop(str(pid), None)
@@ -317,6 +328,7 @@ def register_public(app):
         return redirect(url_for("cart"))
 
     @app.route("/checkout", methods=["GET", "POST"])
+    @limiter.limit(CHECKOUT_LIMIT, methods=["POST"])
     def checkout():
         lines, total = cart_lines()
         if not lines:
@@ -418,6 +430,7 @@ def register_public(app):
         return ids
 
     @app.route("/track", methods=["GET", "POST"])
+    @limiter.limit(TRACK_LIMIT, methods=["POST"])
     def track_order():
         form = {"order_id": request.form.get("order_id", "").strip(),
                 "phone": request.form.get("phone", "").strip()}
@@ -479,6 +492,7 @@ def admin_required(f):
 
 def register_admin(app):
     @app.route("/admin/login", methods=["GET", "POST"])
+    @limiter.limit(LOGIN_LIMIT, methods=["POST"])
     def admin_login():
         if request.method == "POST":
             ip = request.remote_addr or "?"
@@ -508,6 +522,7 @@ def register_admin(app):
         return redirect(url_for("home"))
 
     @app.route("/admin/password", methods=["GET", "POST"])
+    @limiter.limit(PASSWORD_LIMIT, methods=["POST"])
     @admin_required
     def admin_password():
         if request.method == "POST":
